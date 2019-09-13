@@ -5,8 +5,63 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:FinancialManagerWPF"
         mc:Ignorable="d"
+        xmlns:converter="clr-namespace:FinancialManagerWPF.Models"
         Title="MainWindow" Height="450" Width="800">
+    <Window.Resources>
+        <Style TargetType="Label">
+            <Setter Property="FontSize" Value="16"/>
+            <Setter Property="Margin" Value="10" />
+        </Style>
+        <Style TargetType="Button">
+            <Setter Property="FontSize" Value="16"/>
+            <Setter Property="Margin" Value="10" />
+            <Setter Property="Height" Value="40" />
+        </Style>
+        <converter:Color2Brush x:Key="colorConverter"/>
+    </Window.Resources>
     <Grid>
-        
+        <Grid HorizontalAlignment="Left" Width="200">
+            <StackPanel Background="#7FA0A0A0" Name="MenuButtonsList">
+                <Button Click="ShowMainGrid">Главный экран</Button>
+                <Button Click="ShowCurrencyGrid">Валюты</Button>
+                <Button Click="ShowCategoryGrid">Категории</Button>
+            </StackPanel>
+        </Grid>
+        <Grid x:Name="MainMenuGrid" Margin="200,0,0,0">
+
+        </Grid>
+        <Grid x:Name="CurrencyGrid" Margin="200,0,0,0">
+            <ListView x:Name="CurrencyManager" Margin="5,5,5,125" >
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <StackPanel Orientation="Horizontal" Margin="20, 10, 20, 10">
+                            <Rectangle Fill="{Binding color}" Width="50" Margin="5" RadiusX="10" RadiusY="10" MouseDown="ChooseColor"/>
+                            <Label Content="{Binding title}"></Label>
+                            <Button  Height="30" Width="30" Click="DeleteCurrency">
+                                <Label Content="X" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="0" FontSize="16" Height="32"/>
+                            </Button>
+                        </StackPanel>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+            <Label VerticalAlignment="Bottom" Margin="5,5,5,90" HorizontalAlignment="Center">
+                Добавить валюту
+            </Label>
+            <StackPanel VerticalAlignment="Bottom" Height="90" Orientation="Horizontal">
+                <Label VerticalAlignment="Center" Margin="10">Название валюты</Label>
+                <TextBox x:Name="CurrencyNameBox" Height="40" Width="200"/>
+                <Rectangle x:Name="CurrencyColor"  Fill="Aqua" Width="50" Margin="20,20,5,20" RadiusX="10" RadiusY="10" MouseDown="ChooseColor">
+                    <Rectangle.ToolTip>
+                        <ToolTip>
+                            Нажмите, чтобы выбрать цвет
+                        </ToolTip>
+                    </Rectangle.ToolTip>
+                </Rectangle>
+                <Button Click="AddCurrency" >Добавить валюту</Button>
+            </StackPanel>
+        </Grid>
+        <Grid x:Name="CategoriesGrid" Margin="200,0,0,0">
+            
+        </Grid>
     </Grid>
 </Window>
