@@ -18,4 +18,5 @@ D:\InoTask-FinancialManager\InoTask-FinancialManager\FinancialManagerWPF\Financi
 D:\InoTask-FinancialManager\InoTask-FinancialManager\FinancialManagerWPF\FinancialManagerWPF\bin\Debug\EntityFramework.xml
 D:\InoTask-FinancialManager\InoTask-FinancialManager\FinancialManagerWPF\FinancialManagerWPF\bin\Debug\EntityFramework.SqlServer.xml
 D:\InoTask-FinancialManager\InoTask-FinancialManager\FinancialManagerWPF\FinancialManagerWPF\obj\Debug\FinancialManagerWPF.csproj.CopyComplete
-D:\InoTask-FinancialManager\InoTask-FinancialManager\FinancialManagerWPF\FinancialManagerWPF\obj\Debug\GeneratedInternalTypeHelper.g.cs
+D:\InoTask-FinancialManager\InoTask-FinancialManager\FinancialManagerWPF\FinancialManagerWPF\obj\Debug\GetNewTitleWindow.g.cs
+D:\InoTask-FinancialManager\InoTask-FinancialManager\FinancialManagerWPF\FinancialManagerWPF\obj\Debug\GetNewTitleWindow.baml

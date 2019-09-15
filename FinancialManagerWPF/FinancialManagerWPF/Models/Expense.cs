@@ -32,7 +32,7 @@ namespace FinancialManagerWPF.Models
 
     public class Currency : Group
     {
-        public int balance { get; set; }
+        public double balance { get; set; }
     }
 
 }
