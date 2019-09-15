@@ -6,28 +6,139 @@
         xmlns:local="clr-namespace:FinancialManagerWPF"
         mc:Ignorable="d"
         xmlns:converter="clr-namespace:FinancialManagerWPF.Models"
-        Title="MainWindow" Height="450" Width="900" MinHeight="450" MinWidth="900">
+        Title="MainWindow" Height="450" Width="900" MinHeight="600" MinWidth="900">
     <Window.Resources>
         <Style TargetType="Label">
             <Setter Property="FontSize" Value="16"/>
             <Setter Property="Margin" Value="10" />
+            <Setter Property="FontFamily" Value="Yu Gothic UI"/>
         </Style>
         <Style TargetType="Button">
             <Setter Property="FontSize" Value="16"/>
             <Setter Property="Margin" Value="10" />
             <Setter Property="Height" Value="40" />
+            <Setter Property="FontFamily" Value="Yu Gothic UI"/>
         </Style>
     </Window.Resources>
     <Grid>
         <Grid HorizontalAlignment="Left" Width="200">
             <StackPanel Background="#7FA0A0A0" Name="MenuButtonsList">
-                <Button Click="ShowMainGrid">Главный экран</Button>
+                <Button Click="ShowMainGrid">Главное меню</Button>
                 <Button Click="ShowCurrencyGrid">Валюты</Button>
                 <Button Click="ShowCategoryGrid">Категории</Button>
             </StackPanel>
         </Grid>
         <Grid x:Name="MainMenuGrid" Margin="200,0,0,0">
-
+            <Grid Margin="0,0,0,200">
+                <Label Content="Главное меню" HorizontalAlignment="Center" Margin="5" VerticalAlignment="Top" FontSize="24"/>
+                <Grid Margin="0,50,0,0">
+                    <StackPanel Orientation="Vertical" Margin="5,-10,0,0" HorizontalAlignment="Left">
+                        <Label Content="Фильтры" HorizontalAlignment="Center" Margin="0,0,0,5"/>
+                        <Label Content="Валюта" HorizontalAlignment="Center" Margin="0"/>
+                        <ComboBox x:Name="CurrencyFilterComboBox" SelectionChanged="ComboBoxFilter">
+                            <ComboBox.ItemTemplate>
+                                <DataTemplate>
+                                    <StackPanel Orientation="Horizontal">
+                                        <Ellipse Fill="{Binding color}" Height="10" Width="10" Margin="0,0,10,0"/>
+                                        <TextBlock Text="{Binding title}" VerticalAlignment="Center"/>
+                                    </StackPanel>
+                                </DataTemplate>
+                            </ComboBox.ItemTemplate>
+                        </ComboBox>
+                        <Label Content="Категория" HorizontalAlignment="Center" Margin="0"/>
+                        <ComboBox x:Name="CategoryFilterComboBox">
+                            <ComboBox.ItemTemplate>
+                                <DataTemplate>
+                                    <StackPanel Orientation="Horizontal">
+                                        <Ellipse Fill="{Binding color}" Height="10" Width="10" Margin="0,0,10,0"/>
+                                        <TextBlock Text="{Binding title}" VerticalAlignment="Center"/>
+                                    </StackPanel>
+                                </DataTemplate>
+                            </ComboBox.ItemTemplate>
+                        </ComboBox>
+                    </StackPanel>
+                
+                    <ListView x:Name="ExpenseList" Margin="100,5,210,5">
+                        <ListView.ItemTemplate>
+                            <DataTemplate>
+                                <Grid Height="60" Width="600" HorizontalAlignment="Center">
+                                    <Ellipse Fill="{Binding category.color}" Stroke="{Binding currency.color}" StrokeThickness="10" Width="50" Height="50" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="5"/>
+                                    <Label Content="{Binding value}" HorizontalAlignment="Left" Margin="60,0,0,0" VerticalAlignment="Center"/>
+                                    <Label Content="{Binding title}" HorizontalAlignment="Left" Margin="150,0,0,0" VerticalAlignment="Center"/>
+                                    <Label Content="{Binding date}" HorizontalAlignment="Right" VerticalAlignment="Center"/>
+                                </Grid>
+                            </DataTemplate>
+                        </ListView.ItemTemplate>
+                    </ListView>
+                    <StackPanel Orientation="Vertical" HorizontalAlignment="Right" Margin="0,-10,5,5" Width="200">
+                        <TextBlock TextWrapping="Wrap" Width="100" TextAlignment="Center" Text="Новая транзакция" FontSize="16" FontFamily="Yu Gothic UI" Margin="0"/>
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                            <StackPanel Orientation="Vertical" Margin="5,0">
+                                <Label Content="Валюта" HorizontalAlignment="Center" Margin="0"/>
+                                <ComboBox x:Name="TransacrionCurrencyComboBox" Width="90">
+                                    <ComboBox.ItemTemplate>
+                                        <DataTemplate>
+                                            <StackPanel Orientation="Horizontal">
+                                                <Ellipse Fill="{Binding color}" Height="10" Width="10" Margin="0,0,10,0"/>
+                                                <TextBlock Text="{Binding title}" VerticalAlignment="Center"/>
+                                            </StackPanel>
+                                        </DataTemplate>
+                                    </ComboBox.ItemTemplate>
+                                </ComboBox>
+                            </StackPanel>
+                            <StackPanel Orientation="Vertical" Margin="5,0">
+                                <Label Content="Категория" HorizontalAlignment="Center" Margin="0"/>
+                                <ComboBox x:Name="TransacrionCategoryComboBox" Width="90">
+                                    <ComboBox.ItemTemplate>
+                                        <DataTemplate>
+                                            <StackPanel Orientation="Horizontal">
+                                                <Ellipse Fill="{Binding color}" Height="10" Width="10" Margin="0,0,10,0"/>
+                                                <TextBlock Text="{Binding title}" VerticalAlignment="Center"/>
+                                            </StackPanel>
+                                        </DataTemplate>
+                                    </ComboBox.ItemTemplate>
+                                </ComboBox>
+                            </StackPanel>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                            <StackPanel Orientation="Vertical" Margin="5,0" Width="90">
+                                <Label Content="Пополнение" HorizontalAlignment="Center" Margin="-5,0,-15,0" Width="110"/>
+                                <CheckBox x:Name="TransactionAdd" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                            </StackPanel>
+                            <StackPanel Orientation="Vertical" Margin="5,0" Width="90">
+                                <Label Content="Cумма" HorizontalAlignment="Center" Margin="0"/>
+                                <TextBox x:Name="TransacrionValueBox" PreviewTextInput="OnlyDigits" MaxLength="9" />
+                            </StackPanel>
+                        </StackPanel>
+                        <Label Content="Дата" HorizontalAlignment="Center" Margin="0"/>
+                        <DatePicker Name="TransactionDate" Height="30" Margin="5,0"/>
+                        <Label Content="Описание" HorizontalAlignment="Center" Margin="0"/>
+                        <TextBox x:Name="TransacrionTitleBox" MaxLength="30" Margin="5,0"/>
+                        <Button Content="Добавить транзакцию" Margin="5,10" Click="AddExpense"/>
+                    </StackPanel>
+                </Grid>
+            </Grid>
+            <ScrollViewer VerticalAlignment="Bottom" Height="200" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Disabled" PreviewMouseWheel="ScrollViewer_PreviewMouseWheel">
+                <ListView x:Name="MainMeueCurrencyList" IsHitTestVisible="False" VerticalAlignment="Top" HorizontalAlignment="Center" Margin="5" Height="200" Background="{x:Null}" BorderBrush="{x:Null}" Foreground="{x:Null}">
+                <ListView.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center"/>
+                    </ItemsPanelTemplate>
+                </ListView.ItemsPanel>
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <StackPanel Orientation="Vertical" Margin="5">
+                            <Grid HorizontalAlignment="Center" Margin="5">
+                                    <Rectangle MinWidth="100" Width="auto"  Height="80" Stroke="{Binding color}" RadiusX="25" RadiusY="50" StrokeThickness="12">
+                                    </Rectangle>
+                                    <Label Content="{Binding balance}" FontStyle="Normal"  FontSize="24" ContentStringFormat="{}{0:F}" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="20"/>
+                            </Grid>
+                            <Label Content="{Binding title}" HorizontalAlignment="Center" Margin="5,-10,5,5"/>
+                        </StackPanel>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+            </ScrollViewer>
         </Grid>
         <Grid x:Name="CurrencyGrid" Margin="200,0,0,0" Visibility="Hidden">
             <Label HorizontalAlignment="Center" VerticalAlignment="Top"  Height="30">Управление валютами</Label>
@@ -86,7 +197,7 @@
                 <Button VerticalAlignment="Center" Height="70" Width="150" Click="AddCurrency" >Добавить валюту</Button>
             </StackPanel>
         </Grid>
-        <Grid x:Name="CategoriesGrid" Margin="200,0,0,0">
+        <Grid x:Name="CategoriesGrid" Margin="200,0,0,0" Visibility="Hidden">
             <Label HorizontalAlignment="Center" VerticalAlignment="Top"  Height="30">Управление категориями расходов</Label>
             <ListView x:Name="CategoryManager" Margin="5,45,5,130" SelectionMode="Single">
                 <ListView.ItemTemplate>

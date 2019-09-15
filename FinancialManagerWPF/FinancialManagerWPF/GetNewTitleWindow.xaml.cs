@@ -32,7 +32,7 @@ namespace FinancialManagerWPF
             }
         }
 
-        public string Title
+        public string TitleFromUser
         {
             get { return TitleBox.Text; }
         }

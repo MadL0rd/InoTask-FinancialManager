@@ -36,6 +36,14 @@ namespace FinancialManagerWPF
 
                 CurrencyManager.ItemsSource = db.currencies.Local.ToBindingList();
                 CategoryManager.ItemsSource = db.categories.Local.ToBindingList();
+                MainMeueCurrencyList.ItemsSource = db.currencies.Local.ToBindingList();
+                TransacrionCurrencyComboBox.ItemsSource = db.currencies.Local.ToBindingList();
+                TransacrionCategoryComboBox.ItemsSource = db.categories.Local.ToBindingList();
+                CurrencyFilterComboBox.ItemsSource = db.currencies.Local.ToBindingList();
+                CategoryFilterComboBox.ItemsSource = db.categories.Local.ToBindingList();
+                ExpenseList.ItemsSource = db.expenses.Local.ToBindingList();
+
+                
 
                 this.Closing += MainWindow_Closing;
             }
@@ -43,30 +51,17 @@ namespace FinancialManagerWPF
             {
                 ConnectionProblemGrid.Visibility = Visibility.Visible;
             }
-
+           
             CategoryColor.Fill = GetRandomColor();
             CurrencyColor.Fill = GetRandomColor();
-        }
-
-        public SolidColorBrush GetRandomColor()
-        {
-            Random random = new Random();
-            SolidColorBrush brush = new SolidColorBrush(Color.FromRgb(
-                                        (byte)random.Next(1, 255),
-                                        (byte)random.Next(1, 255),
-                                        (byte)random.Next(1, 233))
-                                      );
-            return brush;
         }
         private void MainWindow_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
             db.Dispose();
         }
 
-        private void updateButton_Click(object sender, RoutedEventArgs e)
-        {
-            db.SaveChanges();
-        }
+
+
         private void DeleteCurrency(object sender, RoutedEventArgs e)
         {
             Currency itemBuffer = (sender as Button).DataContext as Currency;
@@ -76,27 +71,26 @@ namespace FinancialManagerWPF
                 db.SaveChanges();
             }
         }
-        private void ChooseColor(object sender, RoutedEventArgs e)
+        private void DeleteCategory(object sender, RoutedEventArgs e)
         {
-            System.Windows.Forms.ColorDialog dialog = new System.Windows.Forms.ColorDialog();
-
-            if (dialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            Category itemBuffer = (sender as Button).DataContext as Category;
+            if (itemBuffer != null)
             {
-                Rectangle palette = sender as Rectangle;
-                if (palette != null)
-                {
-                    SolidColorBrush CurrencyColor = new SolidColorBrush(Color.FromArgb(dialog.Color.A, dialog.Color.R, dialog.Color.G, dialog.Color.B));
-                    palette.Fill = CurrencyColor;
-
-                    Group itemBuffer = palette.DataContext as Group;
-                    if (itemBuffer != null)
-                    {
-                        itemBuffer.color = CurrencyColor.ToString();
-                        db.SaveChanges();
-                    }
-                }
+                db.categories.Remove(itemBuffer);
+                db.SaveChanges();
             }
         }
+        private void DeleteExpense(object sender, RoutedEventArgs e)
+        {
+            Expense itemBuffer = (sender as Button).DataContext as Expense;
+            if (itemBuffer != null)
+            {
+                db.expenses.Remove(itemBuffer);
+                db.SaveChanges();
+            }
+        }
+
+
 
         private void AddCurrency(object sender, RoutedEventArgs e)
         {
@@ -116,6 +110,114 @@ namespace FinancialManagerWPF
             CurrencyNameBox.Text = "";
             CurrencyColor.Fill = GetRandomColor();
         }
+        private void AddCategory(object sender, RoutedEventArgs e)
+        {
+            if (CategoryNameBox.Text.Length == 0)
+            {
+                return;
+            }
+            Category buffCategory = new Category();
+
+            buffCategory.title = CategoryNameBox.Text;
+            buffCategory.color = CategoryColor.Fill.ToString();
+
+            db.categories.Add(buffCategory);
+            db.SaveChanges();
+
+            CategoryNameBox.Text = "";
+            CategoryColor.Fill = GetRandomColor();
+        }
+        private void AddExpense(object sender, RoutedEventArgs e)
+        {
+            if (TransacrionCategoryComboBox.SelectedItem == null ||
+                TransacrionCurrencyComboBox.SelectedItem == null ||
+                TransacrionValueBox.Text.Length == 0 ||
+                TransacrionTitleBox.Text.Length == 0
+               )
+            {
+                return;
+            }
+            if (TransactionDate.SelectedDate == null)
+            {
+                TransactionDate.SelectedDate = DateTime.Today;
+            }
+
+            Expense expenseBuff = new Expense();
+            expenseBuff.category = TransacrionCategoryComboBox.SelectedItem as Category;
+            expenseBuff.currency = TransacrionCurrencyComboBox.SelectedItem as Currency;
+            expenseBuff.title = TransacrionTitleBox.Text;
+            expenseBuff.value = Convert.ToDouble(TransacrionValueBox.Text);
+            expenseBuff.date = TransactionDate.SelectedDate.Value;
+
+            if (TransactionAdd.IsChecked == true)
+            {
+                expenseBuff.value *= -1;
+            }
+            expenseBuff.currency.balance -= expenseBuff.value;
+
+            expenseBuff.value *= -1;
+            db.expenses.Add(expenseBuff);
+            db.SaveChanges();
+            RefreshAllMainMenu();
+        }
+
+
+
+        private void ComboBoxFilter(object sender, SelectionChangedEventArgs e)
+        {
+            ComboBox comboBox = sender as ComboBox;
+            if (comboBox!=null)
+            {
+                ExpenseList.Items.Filter(comboBox.SelectedValue);
+            }
+        }
+
+
+
+        private void ChooseColor(object sender, RoutedEventArgs e)
+        {
+            System.Windows.Forms.ColorDialog dialog = new System.Windows.Forms.ColorDialog();
+
+            if (dialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            {
+                Rectangle palette = sender as Rectangle;
+                if (palette != null)
+                {
+                    SolidColorBrush CurrencyColor = new SolidColorBrush(Color.FromArgb(dialog.Color.A, dialog.Color.R, dialog.Color.G, dialog.Color.B));
+                    palette.Fill = CurrencyColor;
+
+                    Group itemBuffer = palette.DataContext as Group;
+                    if (itemBuffer != null)
+                    {
+                        itemBuffer.color = CurrencyColor.ToString();
+                        db.SaveChanges();
+
+                        RefreshAllMainMenu();
+                    }
+                }
+            }
+        }
+        private void GetNewTitle(object sender, MouseButtonEventArgs e)
+        {
+            GetNewTitleWindow getNewTitle = new GetNewTitleWindow();
+
+            if (getNewTitle.ShowDialog() == true)
+            {
+                Label label = sender as Label;
+                if (label != null) 
+                {
+                    BaseData item = label.DataContext as BaseData;
+                    item.title = getNewTitle.TitleFromUser;
+                    label.Content = getNewTitle.TitleFromUser;
+
+                    db.SaveChanges();
+
+                    RefreshAllMainMenu();
+                }
+            }
+        }
+
+
 
         private void ShowMainGrid(object sender, RoutedEventArgs e)
         {
@@ -123,7 +225,6 @@ namespace FinancialManagerWPF
             CurrencyGrid.Visibility = Visibility.Hidden;
             CategoriesGrid.Visibility = Visibility.Hidden;
         }
-
         private void ShowCurrencyGrid(object sender, RoutedEventArgs e)
         {
 
@@ -131,7 +232,6 @@ namespace FinancialManagerWPF
             CurrencyGrid.Visibility = Visibility.Visible;
             CategoriesGrid.Visibility = Visibility.Hidden;
         }
-
         private void ShowCategoryGrid(object sender, RoutedEventArgs e)
         {
             MainMenuGrid.Visibility = Visibility.Hidden;
@@ -139,6 +239,27 @@ namespace FinancialManagerWPF
             CategoriesGrid.Visibility = Visibility.Visible;
         }
 
+
+
+        private void RefreshAllMainMenu()
+        {
+            MainMeueCurrencyList.Items.Refresh();
+            TransacrionCategoryComboBox.Items.Refresh();
+            TransacrionCurrencyComboBox.Items.Refresh();
+            CategoryFilterComboBox.Items.Refresh();
+            CategoryFilterComboBox.Items.Refresh();
+            ExpenseList.Items.Refresh();
+        }
+        public SolidColorBrush GetRandomColor()
+        {
+            Random random = new Random();
+            SolidColorBrush brush = new SolidColorBrush(Color.FromRgb(
+                                        (byte)random.Next(1, 255),
+                                        (byte)random.Next(1, 255),
+                                        (byte)random.Next(1, 233))
+                                      );
+            return brush;
+        }
         private void OnlyDigits(object sender, TextCompositionEventArgs e)
         {
             char c = Convert.ToChar(e.Text);
@@ -168,55 +289,18 @@ namespace FinancialManagerWPF
                     e.Handled = true;
                 }
             }
-                
+
 
             base.OnPreviewTextInput(e);
         }
-
-        private void DeleteCategory(object sender, RoutedEventArgs e)
+        private void ScrollViewer_PreviewMouseWheel(object sender, MouseWheelEventArgs e)
         {
-            Category itemBuffer = (sender as Button).DataContext as Category;
-            if (itemBuffer != null)
-            {
-                db.categories.Remove(itemBuffer);
-                db.SaveChanges();
-            }
-        }
-
-        private void AddCategory(object sender, RoutedEventArgs e)
-        {
-            if (CategoryNameBox.Text.Length == 0)
-            {
-                return;
-            }
-            Category buffCategory = new Category();
-
-            buffCategory.title = CategoryNameBox.Text;
-            buffCategory.color = CategoryColor.Fill.ToString();
-
-            db.categories.Add(buffCategory);
-            db.SaveChanges();
-
-            CategoryNameBox.Text = "";
-            CategoryColor.Fill = GetRandomColor();
-        }
-
-        private void GetNewTitle(object sender, MouseButtonEventArgs e)
-        {
-            GetNewTitleWindow getNewTitle = new GetNewTitleWindow();
-
-            if (getNewTitle.ShowDialog() == true)
-            {
-                Label label = sender as Label;
-                if (label != null) 
-                {
-                    Group item = label.DataContext as Group;
-                    item.title = getNewTitle.Title;
-                    label.Content = getNewTitle.Title;
-
-                    db.SaveChanges();
-                }
-            }
+            ScrollViewer scrollviewer = sender as ScrollViewer;
+            if (e.Delta > 0)
+                scrollviewer.LineLeft();
+            else
+                scrollviewer.LineRight();
+            e.Handled = true;
         }
     }
 }
