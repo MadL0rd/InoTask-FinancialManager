@@ -1,4 +1,5 @@
 ﻿using FinancialManagerWPF.Models;
+using FinancialManagerWPF.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Data.Entity;
@@ -30,20 +31,16 @@ namespace FinancialManagerWPF
             db = new ExpenseContext();
             try
             {
-                db.categories.Load();
-                db.currencies.Load();
-                db.expenses.Load();
-
-                CurrencyManager.ItemsSource = db.currencies.Local.ToBindingList();
-                CategoryManager.ItemsSource = db.categories.Local.ToBindingList();
-                MainMeueCurrencyList.ItemsSource = db.currencies.Local.ToBindingList();
-                TransacrionCurrencyComboBox.ItemsSource = db.currencies.Local.ToBindingList();
-                TransacrionCategoryComboBox.ItemsSource = db.categories.Local.ToBindingList();
-                CurrencyFilterComboBox.ItemsSource = db.currencies.Local.ToBindingList();
-                CategoryFilterComboBox.ItemsSource = db.categories.Local.ToBindingList();
-                ExpenseList.ItemsSource = db.expenses.Local.ToBindingList();
+                db.LoadAll();
+                DataContext = new ExpenseViewModel(db);
 
                 
+                CategoryManager.ItemsSource = db.categories.Local.ToBindingList();
+                
+                
+                TransacrionCategoryComboBox.ItemsSource = db.categories.Local.ToBindingList();
+               
+                CategoryFilterComboBox.ItemsSource = db.categories.Local.ToBindingList();
 
                 this.Closing += MainWindow_Closing;
             }
@@ -51,9 +48,11 @@ namespace FinancialManagerWPF
             {
                 ConnectionProblemGrid.Visibility = Visibility.Visible;
             }
-           
+
+
             CategoryColor.Fill = GetRandomColor();
             CurrencyColor.Fill = GetRandomColor();
+
         }
         private void MainWindow_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
@@ -159,17 +158,6 @@ namespace FinancialManagerWPF
             db.expenses.Add(expenseBuff);
             db.SaveChanges();
             RefreshAllMainMenu();
-        }
-
-
-
-        private void ComboBoxFilter(object sender, SelectionChangedEventArgs e)
-        {
-            ComboBox comboBox = sender as ComboBox;
-            if (comboBox!=null)
-            {
-                ExpenseList.Items.Filter(comboBox.SelectedValue);
-            }
         }
 
 

@@ -13,6 +13,12 @@ namespace FinancialManagerWPF.Models
         {
 
         }
+        public void LoadAll()
+        {
+            expenses.Load();
+            categories.Load();
+            currencies.Load();
+        }
         public DbSet<Expense> expenses { get; set; }
         public DbSet<Category> categories { get; set; }
         public DbSet<Currency> currencies { get; set; }

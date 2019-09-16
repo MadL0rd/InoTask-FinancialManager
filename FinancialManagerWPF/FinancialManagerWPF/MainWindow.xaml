@@ -32,10 +32,10 @@
             <Grid Margin="0,0,0,200">
                 <Label Content="Главное меню" HorizontalAlignment="Center" Margin="5" VerticalAlignment="Top" FontSize="24"/>
                 <Grid Margin="0,50,0,0">
-                    <StackPanel Orientation="Vertical" Margin="5,-10,0,0" HorizontalAlignment="Left">
+                    <StackPanel Orientation="Vertical" Margin="5,-10,0,0" HorizontalAlignment="Left" Width="90">
                         <Label Content="Фильтры" HorizontalAlignment="Center" Margin="0,0,0,5"/>
                         <Label Content="Валюта" HorizontalAlignment="Center" Margin="0"/>
-                        <ComboBox x:Name="CurrencyFilterComboBox" SelectionChanged="ComboBoxFilter">
+                        <ComboBox x:Name="CurrencyFilterComboBox" ItemsSource="{Binding Currencies}" SelectedItem="{Binding CurrencyFilter}">   
                             <ComboBox.ItemTemplate>
                                 <DataTemplate>
                                     <StackPanel Orientation="Horizontal">
@@ -46,7 +46,7 @@
                             </ComboBox.ItemTemplate>
                         </ComboBox>
                         <Label Content="Категория" HorizontalAlignment="Center" Margin="0"/>
-                        <ComboBox x:Name="CategoryFilterComboBox">
+                        <ComboBox x:Name="CategoryFilterComboBox" SelectedItem="{Binding CategoryFilter}">
                             <ComboBox.ItemTemplate>
                                 <DataTemplate>
                                     <StackPanel Orientation="Horizontal">
@@ -57,8 +57,8 @@
                             </ComboBox.ItemTemplate>
                         </ComboBox>
                     </StackPanel>
-                
-                    <ListView x:Name="ExpenseList" Margin="100,5,210,5">
+
+                    <ListView x:Name="ExpenseList" Margin="100,5,210,5" ItemsSource="{Binding Expenses}">
                         <ListView.ItemTemplate>
                             <DataTemplate>
                                 <Grid Height="60" Width="600" HorizontalAlignment="Center">
@@ -75,7 +75,7 @@
                         <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
                             <StackPanel Orientation="Vertical" Margin="5,0">
                                 <Label Content="Валюта" HorizontalAlignment="Center" Margin="0"/>
-                                <ComboBox x:Name="TransacrionCurrencyComboBox" Width="90">
+                                <ComboBox x:Name="TransacrionCurrencyComboBox" ItemsSource="{Binding Currencies}" Width="90">
                                     <ComboBox.ItemTemplate>
                                         <DataTemplate>
                                             <StackPanel Orientation="Horizontal">
@@ -119,7 +119,7 @@
                 </Grid>
             </Grid>
             <ScrollViewer VerticalAlignment="Bottom" Height="200" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Disabled" PreviewMouseWheel="ScrollViewer_PreviewMouseWheel">
-                <ListView x:Name="MainMeueCurrencyList" IsHitTestVisible="False" VerticalAlignment="Top" HorizontalAlignment="Center" Margin="5" Height="200" Background="{x:Null}" BorderBrush="{x:Null}" Foreground="{x:Null}">
+                <ListView x:Name="MainMeueCurrencyList" ItemsSource="{Binding Currencies}" IsHitTestVisible="False" VerticalAlignment="Top" HorizontalAlignment="Center" Margin="5" Height="200" Background="{x:Null}" BorderBrush="{x:Null}" Foreground="{x:Null}">
                 <ListView.ItemsPanel>
                     <ItemsPanelTemplate>
                         <StackPanel Orientation="Horizontal" HorizontalAlignment="Center"/>
@@ -142,7 +142,7 @@
         </Grid>
         <Grid x:Name="CurrencyGrid" Margin="200,0,0,0" Visibility="Hidden">
             <Label HorizontalAlignment="Center" VerticalAlignment="Top"  Height="30">Управление валютами</Label>
-            <ListView x:Name="CurrencyManager" Margin="5,45,5,130" SelectionMode="Single">
+            <ListView x:Name="CurrencyManager" Margin="5,45,5,130" SelectionMode="Single" ItemsSource="{Binding Currencies}">
                 <ListView.ItemTemplate>
                     <DataTemplate>
                         <StackPanel Orientation="Horizontal" Margin="20, 10, 20, 10">
