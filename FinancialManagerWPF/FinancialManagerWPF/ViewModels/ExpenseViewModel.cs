@@ -18,6 +18,7 @@ namespace FinancialManagerWPF.ViewModels
             Expenses = CollectionViewSource.GetDefaultView(db.expenses.Local);
             Expenses.Filter = FilterExpense;
             Currencies = CollectionViewSource.GetDefaultView(db.currencies.Local);
+            Categories = CollectionViewSource.GetDefaultView(db.categories.Local);
         }
 
 
@@ -31,7 +32,6 @@ namespace FinancialManagerWPF.ViewModels
         public static readonly DependencyProperty ExpensesProperty =
             DependencyProperty.Register("Expenses", typeof(ICollectionView), typeof(ExpenseViewModel), new PropertyMetadata(null));
 
-
         public ICollectionView Currencies
         {
             get { return (ICollectionView)GetValue(CurrenciesProperty); }
@@ -41,8 +41,28 @@ namespace FinancialManagerWPF.ViewModels
             DependencyProperty.Register("Currencies", typeof(ICollectionView), typeof(ExpenseViewModel), new PropertyMetadata(null));
 
 
+        public ICollectionView Categories
+        {
+            get { return (ICollectionView)GetValue(CategoriesProperty); }
+            set { SetValue(CategoriesProperty, value); }
+        }
+        public static readonly DependencyProperty CategoriesProperty =
+            DependencyProperty.Register("Categories", typeof(ICollectionView), typeof(ExpenseViewModel), new PropertyMetadata(null));
+
+
+
 
         //Filters
+
+
+        public string TitleFilter
+        {
+            get { return (string)GetValue(TitleFilterProperty); }
+            set { SetValue(TitleFilterProperty, value); }
+        }
+        public static readonly DependencyProperty TitleFilterProperty =
+            DependencyProperty.Register("TitleFilter", typeof(string), typeof(ExpenseViewModel), new PropertyMetadata(null, Filter_Changed));
+
         public Currency CurrencyFilter
         {
             get { return (Currency)GetValue(CurrencyFilterProperty); }
@@ -59,6 +79,30 @@ namespace FinancialManagerWPF.ViewModels
         public static readonly DependencyProperty CategoryFilterProperty =
             DependencyProperty.Register("CategoryFilter", typeof(Category), typeof(ExpenseViewModel), new PropertyMetadata(null, Filter_Changed));
 
+        private static DateTime GetMonthBeginDate()
+        {
+            DateTime date = DateTime.Today;
+            date = date.AddDays(-1 * DateTime.Today.Day + 1);
+            return date;
+        }
+        public DateTime BeginDateFilter
+        {
+            get { return (DateTime)GetValue(BeginDateFilterProperty); }
+            set { SetValue(BeginDateFilterProperty, value); }
+        }
+        public static readonly DependencyProperty BeginDateFilterProperty =
+            DependencyProperty.Register("BeginDateFilter", typeof(DateTime), typeof(ExpenseViewModel), new PropertyMetadata(GetMonthBeginDate(), Filter_Changed));
+
+        public DateTime EndDateFilter
+        {
+            get { return (DateTime)GetValue(EndDateFilterProperty); }
+            set { SetValue(EndDateFilterProperty, value); }
+        }
+        public static readonly DependencyProperty EndDateFilterProperty =
+            DependencyProperty.Register("EndDateFilter", typeof(DateTime), typeof(ExpenseViewModel), new PropertyMetadata(DateTime.Today, Filter_Changed));
+
+
+
 
         private static void Filter_Changed(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
@@ -68,17 +112,33 @@ namespace FinancialManagerWPF.ViewModels
                 current.Expenses.Filter = null;
                 current.Expenses.Filter = current.FilterExpense;
             }
-        }        
+        }
+        public void ResetFilters()
+        {
+            CurrencyFilter = null;
+            CategoryFilter = null;
+            BeginDateFilter = GetMonthBeginDate();
+            EndDateFilter = DateTime.Today;
+            TitleFilter = null;
+        }
         private bool FilterExpense(object obj)
         {
             Expense item = obj as Expense;
             if (item != null)
             {
-                if (CurrencyFilter != null && item.currency.id != CurrencyFilter.id)
+                if (CurrencyFilter != null && item.currency != CurrencyFilter)
                 {
                     return false;
                 }
-                if (CategoryFilter != null && item.category.id != CategoryFilter.id)
+                if (CategoryFilter != null && item.category != CategoryFilter)
+                {
+                    return false;
+                }
+                if (item.date < BeginDateFilter || item.date > EndDateFilter)
+                {
+                    return false;
+                }
+                if (TitleFilter != null && TitleFilter.Length != 0 && !item.title.ToLower().Contains(TitleFilter.ToLower()))
                 {
                     return false;
                 }

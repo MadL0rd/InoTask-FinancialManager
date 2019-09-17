@@ -24,6 +24,7 @@ namespace FinancialManagerWPF
     public partial class MainWindow : Window
     {
         ExpenseContext db;
+        ExpenseViewModel viewModel;
         public MainWindow()
         {
             InitializeComponent();
@@ -32,23 +33,15 @@ namespace FinancialManagerWPF
             try
             {
                 db.LoadAll();
-                DataContext = new ExpenseViewModel(db);
-
-                
-                CategoryManager.ItemsSource = db.categories.Local.ToBindingList();
-                
-                
-                TransacrionCategoryComboBox.ItemsSource = db.categories.Local.ToBindingList();
-               
-                CategoryFilterComboBox.ItemsSource = db.categories.Local.ToBindingList();
-
-                this.Closing += MainWindow_Closing;
+                viewModel = new ExpenseViewModel(db);
+                DataContext = viewModel;
             }
             catch
             {
                 ConnectionProblemGrid.Visibility = Visibility.Visible;
             }
 
+            this.Closing += MainWindow_Closing;
 
             CategoryColor.Fill = GetRandomColor();
             CurrencyColor.Fill = GetRandomColor();
@@ -289,6 +282,19 @@ namespace FinancialManagerWPF
             else
                 scrollviewer.LineRight();
             e.Handled = true;
+        }
+
+        private void ResetFilters(object sender, RoutedEventArgs e)
+        {
+            viewModel.ResetFilters();
+        }
+        private void CurrencyFilterReset(object sender, RoutedEventArgs e)
+        {
+            viewModel.CurrencyFilter = null;
+        }
+        private void CategoryFilterReset(object sender, RoutedEventArgs e)
+        {
+            viewModel.CategoryFilter = null;
         }
     }
 }
