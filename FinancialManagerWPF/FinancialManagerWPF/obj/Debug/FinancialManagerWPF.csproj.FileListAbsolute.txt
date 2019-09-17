@@ -20,3 +20,5 @@ D:\InoTask-FinancialManager\InoTask-FinancialManager\FinancialManagerWPF\Financi
 D:\InoTask-FinancialManager\InoTask-FinancialManager\FinancialManagerWPF\FinancialManagerWPF\obj\Debug\FinancialManagerWPF.csproj.CopyComplete
 D:\InoTask-FinancialManager\InoTask-FinancialManager\FinancialManagerWPF\FinancialManagerWPF\obj\Debug\GetNewTitleWindow.g.cs
 D:\InoTask-FinancialManager\InoTask-FinancialManager\FinancialManagerWPF\FinancialManagerWPF\obj\Debug\GetNewTitleWindow.baml
+D:\InoTask-FinancialManager\InoTask-FinancialManager\FinancialManagerWPF\FinancialManagerWPF\obj\Debug\ExpenseEditWindow.g.cs
+D:\InoTask-FinancialManager\InoTask-FinancialManager\FinancialManagerWPF\FinancialManagerWPF\obj\Debug\ExpenseEditWindow.baml

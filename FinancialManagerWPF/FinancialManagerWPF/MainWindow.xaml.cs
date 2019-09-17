@@ -2,6 +2,7 @@
 using FinancialManagerWPF.ViewModels;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Data.Entity;
 using System.Linq;
 using System.Text;
@@ -18,9 +19,6 @@ using System.Windows.Shapes;
 
 namespace FinancialManagerWPF
 {
-    /// <summary>
-    /// Логика взаимодействия для MainWindow.xaml
-    /// </summary>
     public partial class MainWindow : Window
     {
         ExpenseContext db;
@@ -77,8 +75,16 @@ namespace FinancialManagerWPF
             Expense itemBuffer = (sender as Button).DataContext as Expense;
             if (itemBuffer != null)
             {
-                db.expenses.Remove(itemBuffer);
-                db.SaveChanges();
+                if (MessageBox.Show("Вы уверены, что хотите удалить эту транзакцию?","Внимание!", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
+                {
+                    if (itemBuffer.currency != null)
+                    {
+                        itemBuffer.currency.balance -= itemBuffer.value;
+                    }                    
+                    db.expenses.Remove(itemBuffer);
+                    db.SaveChanges();
+                    RefreshAllMainMenu();
+                }                
             }
         }
 
@@ -88,6 +94,7 @@ namespace FinancialManagerWPF
         {
             if (CurrencyNameBox.Text.Length == 0 || CurrencyBallanceBox.Text.Length == 0)
             {
+                MessageBox.Show("Заполние необходимые поля!");
                 return;
             }
             Currency buffCurrency = new Currency();
@@ -106,6 +113,7 @@ namespace FinancialManagerWPF
         {
             if (CategoryNameBox.Text.Length == 0)
             {
+                MessageBox.Show("Заполние необходимые поля!");
                 return;
             }
             Category buffCategory = new Category();
@@ -127,6 +135,7 @@ namespace FinancialManagerWPF
                 TransacrionTitleBox.Text.Length == 0
                )
             {
+                MessageBox.Show("Заполние необходимые поля!");
                 return;
             }
             if (TransactionDate.SelectedDate == null)
@@ -161,7 +170,7 @@ namespace FinancialManagerWPF
 
             if (dialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
             {
-                Rectangle palette = sender as Rectangle;
+                Ellipse palette = sender as Ellipse;
                 if (palette != null)
                 {
                     SolidColorBrush CurrencyColor = new SolidColorBrush(Color.FromArgb(dialog.Color.A, dialog.Color.R, dialog.Color.G, dialog.Color.B));
@@ -197,7 +206,23 @@ namespace FinancialManagerWPF
                 }
             }
         }
-
+        private void EditExpense(object sender, RoutedEventArgs e)
+        {
+            Button button = sender as Button;
+            if (button != null)
+            {
+                Expense item = button.DataContext as Expense;
+                if (item != null)
+                {
+                    ExpenseEditWindow editWindow = new ExpenseEditWindow(viewModel, item);
+                    if (editWindow.ShowDialog() == true)
+                    {
+                        db.SaveChanges();
+                        RefreshAllMainMenu();
+                    }                 
+                }
+            }
+        }
 
 
         private void ShowMainGrid(object sender, RoutedEventArgs e)

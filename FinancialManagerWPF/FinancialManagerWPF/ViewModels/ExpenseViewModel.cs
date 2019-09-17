@@ -11,7 +11,7 @@ using System.Windows.Data;
 
 namespace FinancialManagerWPF.ViewModels
 {
-    class ExpenseViewModel : DependencyObject
+    public class ExpenseViewModel : DependencyObject
     {
         public ExpenseViewModel(ExpenseContext db)
         {
@@ -19,6 +19,10 @@ namespace FinancialManagerWPF.ViewModels
             Expenses.Filter = FilterExpense;
             Currencies = CollectionViewSource.GetDefaultView(db.currencies.Local);
             Categories = CollectionViewSource.GetDefaultView(db.categories.Local);
+
+            Expenses.SortDescriptions.Add(new SortDescription("date", ListSortDirection.Ascending));
+            Currencies.SortDescriptions.Add(new SortDescription("title", ListSortDirection.Ascending));
+            Categories.SortDescriptions.Add(new SortDescription("title", ListSortDirection.Ascending));
         }
 
 

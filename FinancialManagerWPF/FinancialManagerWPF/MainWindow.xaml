@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:FinancialManagerWPF"
         mc:Ignorable="d"
         xmlns:converter="clr-namespace:FinancialManagerWPF.Models"
-        Title="MainWindow" Height="450" Width="800" MinHeight="600" MinWidth="900"  WindowStartupLocation="CenterScreen" >
+        Title="MainWindow" Height="600" Width="950" MinHeight="600" MinWidth="950"  WindowStartupLocation="CenterScreen" >
     <Window.Resources>
         <Style TargetType="Label">
             <Setter Property="FontSize" Value="16"/>
@@ -95,9 +95,11 @@
                                                 <TextBlock Text="{Binding category.title}"/>
                                             </StackPanel>
                                             <TextBlock Text="{Binding date, StringFormat=Дата: {0:d}}"/>
+                                            <Button Content="Редактировать" Click="EditExpense" Margin="5"/>
+                                            <Button Content="Удалить" Click="DeleteExpense" Width="100" Height="30" HorizontalAlignment="Center" Margin="5" Background="{x:Null}" BorderBrush="#FF999999" Foreground="Red"/>
                                         </StackPanel>
                                     </Expander>
-                                </StackPanel>
+                                    </StackPanel>
                             </DataTemplate>
                         </ListView.ItemTemplate>
                     </ListView>
@@ -179,13 +181,13 @@
                     <DataTemplate>
                         <StackPanel Orientation="Horizontal" Margin="20, 10, 20, 10">
                             <Button Content="Удалить" Click="DeleteCurrency" Width="100" Height="30" HorizontalAlignment="Right" Background="{x:Null}" BorderBrush="#FF999999" Foreground="Red"/>
-                            <Rectangle Fill="{Binding color}" Width="50" Margin="30,5,5,5" RadiusX="10" RadiusY="10" MouseDown="ChooseColor">
-                                <Rectangle.ToolTip>
+                            <Ellipse Fill="{Binding color}" Width="50" Height="50" Margin="30,5,5,5" MouseDown="ChooseColor">
+                                <Ellipse.ToolTip>
                                     <ToolTip>
                                         Нажмите чтобы изменить цвет
                                     </ToolTip>
-                                </Rectangle.ToolTip>
-                            </Rectangle>
+                                </Ellipse.ToolTip>
+                            </Ellipse>
                             <Label Content="{Binding title}" MouseDown="GetNewTitle">
                                 <Label.ToolTip>
                                     <ToolTip>
@@ -236,13 +238,13 @@
                     <DataTemplate>
                         <StackPanel Orientation="Horizontal" Margin="20, 10, 20, 10">
                             <Button Content="Удалить" Click="DeleteCategory" Width="100" Height="30" HorizontalAlignment="Right" Background="{x:Null}" BorderBrush="#FF999999" Foreground="Red"/>
-                            <Rectangle Fill="{Binding color}" Width="50" Margin="30,5,5,5" RadiusX="10" RadiusY="10" MouseDown="ChooseColor">
-                                <Rectangle.ToolTip>
+                            <Ellipse Fill="{Binding color}" Width="50" Height="50" Margin="30,5,5,5" MouseDown="ChooseColor">
+                                <Ellipse.ToolTip>
                                     <ToolTip>
                                         Нажмите чтобы изменить цвет
                                     </ToolTip>
-                                </Rectangle.ToolTip>
-                            </Rectangle>
+                                </Ellipse.ToolTip>
+                            </Ellipse>
                             <Label Content="{Binding title}" MouseDown="GetNewTitle">
                                 <Label.ToolTip>
                                     <ToolTip>
@@ -279,7 +281,7 @@
                     </Rectangle>
                 </StackPanel>
 
-                <Button VerticalAlignment="Center" Height="70" Width="200" Click="AddCategory" >Добавить категорию</Button>
+                <Button VerticalAlignment="Center" Height="70" Width="200" Click="AddCategory" Content="Добавить категорию"/>
             </StackPanel>
         </Grid>
         <Grid x:Name="ConnectionProblemGrid" Visibility="Hidden">
