@@ -1,5 +1,7 @@
 ﻿using FinancialManagerWPF.Models;
 using FinancialManagerWPF.ViewModels;
+using LiveCharts;
+using LiveCharts.Wpf;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -23,6 +25,7 @@ namespace FinancialManagerWPF
     {
         ExpenseContext db;
         ExpenseViewModel viewModel;
+
         public MainWindow()
         {
             InitializeComponent();
@@ -44,7 +47,35 @@ namespace FinancialManagerWPF
             CategoryColor.Fill = GetRandomColor();
             CurrencyColor.Fill = GetRandomColor();
 
+
+
+
+            SeriesCollection = new SeriesCollection
+            {
+                new ColumnSeries
+                {
+                    Title = "2015",
+                    Values = new ChartValues<double> { 10, 50, 39, 50 }
+                }
+            };
+
+            //adding series will update and animate the chart automatically
+            SeriesCollection.Add(new ColumnSeries
+            {
+                Title = "2016",
+                Values = new ChartValues<double> { 11, 56, 42 }
+            });
+
+            //also adding values updates and animates the chart automatically
+            SeriesCollection[1].Values.Add(48d);
+
+            Labels = new[] { "Maria", "Susan", "Charles", "Frida" };
+            Formatter = value => value.ToString("N");
+
         }
+        public SeriesCollection SeriesCollection { get; set; }
+        public string[] Labels { get; set; }
+        public Func<double, string> Formatter { get; set; }
         private void MainWindow_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
             db.Dispose();
@@ -160,6 +191,8 @@ namespace FinancialManagerWPF
             db.expenses.Add(expenseBuff);
             db.SaveChanges();
             RefreshAllMainMenu();
+
+            MessageBox.Show("Транзакция успешно добавлена!");
         }
 
 
@@ -230,10 +263,11 @@ namespace FinancialManagerWPF
             MainMenuGrid.Visibility = Visibility.Visible;
             CurrencyGrid.Visibility = Visibility.Hidden;
             CategoriesGrid.Visibility = Visibility.Hidden;
+            DiagramGrid.Visibility = Visibility.Hidden;
         }
         private void ShowCurrencyGrid(object sender, RoutedEventArgs e)
         {
-
+            DiagramGrid.Visibility = Visibility.Hidden;
             MainMenuGrid.Visibility = Visibility.Hidden;
             CurrencyGrid.Visibility = Visibility.Visible;
             CategoriesGrid.Visibility = Visibility.Hidden;
@@ -243,8 +277,18 @@ namespace FinancialManagerWPF
             MainMenuGrid.Visibility = Visibility.Hidden;
             CurrencyGrid.Visibility = Visibility.Hidden;
             CategoriesGrid.Visibility = Visibility.Visible;
+            DiagramGrid.Visibility = Visibility.Hidden;
         }
+        private void ShowDiagramGrid(object sender, RoutedEventArgs e)
+        {
+            MainMenuGrid.Visibility = Visibility.Hidden;
+            CurrencyGrid.Visibility = Visibility.Hidden;
+            CategoriesGrid.Visibility = Visibility.Hidden;
+            DiagramGrid.Visibility = Visibility.Visible;
 
+            //CurrencyFilterComboBox.SelectedItem = null;
+            //Catego
+        }
 
 
         private void RefreshAllMainMenu()
@@ -321,5 +365,6 @@ namespace FinancialManagerWPF
         {
             viewModel.CategoryFilter = null;
         }
+
     }
 }

@@ -1,4 +1,6 @@
 ﻿using FinancialManagerWPF.Models;
+using LiveCharts;
+using LiveCharts.Wpf;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -8,6 +10,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Data;
+using System.Windows.Media;
 
 namespace FinancialManagerWPF.ViewModels
 {
@@ -16,13 +19,16 @@ namespace FinancialManagerWPF.ViewModels
         public ExpenseViewModel(ExpenseContext db)
         {
             Expenses = CollectionViewSource.GetDefaultView(db.expenses.Local);
-            Expenses.Filter = FilterExpense;
             Currencies = CollectionViewSource.GetDefaultView(db.currencies.Local);
             Categories = CollectionViewSource.GetDefaultView(db.categories.Local);
 
             Expenses.SortDescriptions.Add(new SortDescription("date", ListSortDirection.Ascending));
             Currencies.SortDescriptions.Add(new SortDescription("title", ListSortDirection.Ascending));
             Categories.SortDescriptions.Add(new SortDescription("title", ListSortDirection.Ascending));
+
+            RefreshDiagram();
+
+            Expenses.Filter = FilterExpense;
         }
 
 
@@ -57,8 +63,6 @@ namespace FinancialManagerWPF.ViewModels
 
 
         //Filters
-
-
         public string TitleFilter
         {
             get { return (string)GetValue(TitleFilterProperty); }
@@ -105,14 +109,86 @@ namespace FinancialManagerWPF.ViewModels
         public static readonly DependencyProperty EndDateFilterProperty =
             DependencyProperty.Register("EndDateFilter", typeof(DateTime), typeof(ExpenseViewModel), new PropertyMetadata(DateTime.Today, Filter_Changed));
 
+        //Diagrams
 
 
 
+        public bool AddShowingFilter
+        {
+            get { return (bool)GetValue(AddShowingFilterProperty); }
+            set { SetValue(AddShowingFilterProperty, value); }
+        }
+        public static readonly DependencyProperty AddShowingFilterProperty =
+            DependencyProperty.Register("AddShowingFilter", typeof(bool), typeof(ExpenseViewModel), new PropertyMetadata(false, Filter_Changed));
+
+
+        public SeriesCollection Series
+        {
+            get { return (SeriesCollection)GetValue(SeriesProperty); }
+            set { SetValue(SeriesProperty, value); }
+        }
+        public static readonly DependencyProperty SeriesProperty =
+            DependencyProperty.Register("Series", typeof(SeriesCollection), typeof(ExpenseViewModel), new PropertyMetadata(null));
+
+        public List<string> Labels
+        {
+            get { return (List<string>)GetValue(LabelsProperty); }
+            set { SetValue(LabelsProperty, value); }
+        }
+        public static readonly DependencyProperty LabelsProperty =
+            DependencyProperty.Register("Labels", typeof(List<string>), typeof(ExpenseViewModel), new PropertyMetadata(null));
+
+
+        private void RefreshDiagram()
+        {
+            Labels = new List<string>();
+            Series = new SeriesCollection();
+            if (CurrencyFilter == null)
+            {
+                foreach (Currency item in Currencies)
+                {
+                    Labels.Add(item.title);
+                }
+            }
+            else
+            {
+                Labels.Add(CurrencyFilter.title);
+            }
+
+
+            if (CategoryFilter == null)
+            {
+                foreach (Category item in Categories)
+                {
+                    ColumnSeries columnSeries = new ColumnSeries
+                    {
+                        Title = item.title,
+                        Values = new ChartValues<double>(),
+                        Fill = (SolidColorBrush)new BrushConverter().ConvertFromString(item.color)
+                    };
+                    for (int i = 0; i < Labels.Count; i++) columnSeries.Values.Add(0.0);
+                    Series.Add(columnSeries);
+                }
+            }
+            else
+            {
+                ColumnSeries columnSeries = new ColumnSeries
+                {
+                    Title = CategoryFilter.title,
+                    Values = new ChartValues<double>(),
+                    Fill = (SolidColorBrush)new BrushConverter().ConvertFromString(CategoryFilter.color)
+                };
+                for (int i = 0; i < Labels.Count; i++) columnSeries.Values.Add(0.0);
+                Series.Add(columnSeries);
+            }
+        }
         private static void Filter_Changed(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             var current = d as ExpenseViewModel;
             if (current != null)
             {
+                current.RefreshDiagram();
+
                 current.Expenses.Filter = null;
                 current.Expenses.Filter = current.FilterExpense;
             }
@@ -145,6 +221,30 @@ namespace FinancialManagerWPF.ViewModels
                 if (TitleFilter != null && TitleFilter.Length != 0 && !item.title.ToLower().Contains(TitleFilter.ToLower()))
                 {
                     return false;
+                }
+
+
+                for (int i = 0; i < Series.Count; i++)
+                {
+                    if (Series[i].Title == item.category.title)
+                    {
+                        for (int j = 0; j < Labels.Count; j++)
+                        {
+                            if (Labels[j] == item.currency.title)
+                            {
+                                if (item.value < 0 && !AddShowingFilter)
+                                {
+                                    Series[i].Values[j] = Convert.ToDouble(Series[i].Values[j]) - item.value;
+                                }
+                                if (item.value > 0 && AddShowingFilter)
+                                {
+                                    Series[i].Values[j] = Convert.ToDouble(Series[i].Values[j]) + item.value;
+                                }
+                                break;
+                            }
+                        }
+                        break;
+                    }
                 }
 
                 return true;

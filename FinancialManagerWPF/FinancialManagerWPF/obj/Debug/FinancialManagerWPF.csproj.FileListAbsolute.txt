@@ -22,3 +22,9 @@ D:\InoTask-FinancialManager\InoTask-FinancialManager\FinancialManagerWPF\Financi
 D:\InoTask-FinancialManager\InoTask-FinancialManager\FinancialManagerWPF\FinancialManagerWPF\obj\Debug\GetNewTitleWindow.baml
 D:\InoTask-FinancialManager\InoTask-FinancialManager\FinancialManagerWPF\FinancialManagerWPF\obj\Debug\ExpenseEditWindow.g.cs
 D:\InoTask-FinancialManager\InoTask-FinancialManager\FinancialManagerWPF\FinancialManagerWPF\obj\Debug\ExpenseEditWindow.baml
+D:\InoTask-FinancialManager\InoTask-FinancialManager\FinancialManagerWPF\FinancialManagerWPF\bin\Debug\LiveCharts.dll
+D:\InoTask-FinancialManager\InoTask-FinancialManager\FinancialManagerWPF\FinancialManagerWPF\bin\Debug\LiveCharts.Wpf.dll
+D:\InoTask-FinancialManager\InoTask-FinancialManager\FinancialManagerWPF\FinancialManagerWPF\bin\Debug\LiveCharts.pdb
+D:\InoTask-FinancialManager\InoTask-FinancialManager\FinancialManagerWPF\FinancialManagerWPF\bin\Debug\LiveCharts.xml
+D:\InoTask-FinancialManager\InoTask-FinancialManager\FinancialManagerWPF\FinancialManagerWPF\bin\Debug\LiveCharts.Wpf.pdb
+D:\InoTask-FinancialManager\InoTask-FinancialManager\FinancialManagerWPF\FinancialManagerWPF\bin\Debug\LiveCharts.Wpf.xml
