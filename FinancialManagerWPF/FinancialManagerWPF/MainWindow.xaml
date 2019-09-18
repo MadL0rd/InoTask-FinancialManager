@@ -221,13 +221,13 @@
                             </ToolTip>
                         </Label.ToolTip>
                     </Label>
-                    <Rectangle x:Name="CurrencyColor"  Fill="BlueViolet"  Height="35" Width="auto"  Margin="10,0,5,5" RadiusX="10" RadiusY="10" MouseDown="ChooseColor">
-                        <Rectangle.ToolTip>
+                    <Ellipse x:Name="CurrencyColor"  Fill="BlueViolet"  Height="35" Width="35"  Margin="10,0,5,5" MouseDown="ChooseColor">
+                        <Ellipse.ToolTip>
                             <ToolTip>
                                 Нажмите чтобы выбрать цвет
                             </ToolTip>
-                        </Rectangle.ToolTip>
-                    </Rectangle>
+                        </Ellipse.ToolTip>
+                    </Ellipse>
                 </StackPanel>
 
                 <Button VerticalAlignment="Center" Height="70" Width="150" Click="AddCurrency" >Добавить валюту</Button>
@@ -274,13 +274,13 @@
                             </ToolTip>
                         </Label.ToolTip>
                     </Label>
-                    <Rectangle x:Name="CategoryColor"  Fill="BlueViolet"  Height="35" Width="auto"  Margin="10,0,5,5" RadiusX="10" RadiusY="10" MouseDown="ChooseColor">
-                        <Rectangle.ToolTip>
+                    <Ellipse x:Name="CategoryColor"  Fill="BlueViolet"  Height="35" Width="35"  Margin="10,0,5,5" MouseDown="ChooseColor">
+                        <Ellipse.ToolTip>
                             <ToolTip>
                                 Нажмите чтобы выбрать цвет
                             </ToolTip>
-                        </Rectangle.ToolTip>
-                    </Rectangle>
+                        </Ellipse.ToolTip>
+                    </Ellipse>
                 </StackPanel>
 
                 <Button VerticalAlignment="Center" Height="70" Width="200" Click="AddCategory" Content="Добавить категорию"/>
